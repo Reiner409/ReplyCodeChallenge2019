@@ -58,6 +58,7 @@ public class F4Writer {
         this.writeLine(String.valueOf(line));
     }
 
+    /*
     public static void main(String[] args) {
 
         F4Writer writer = new F4Writer("prova.txt");
@@ -68,4 +69,6 @@ public class F4Writer {
 
         writer.close();
     }
+    */
+
 }
