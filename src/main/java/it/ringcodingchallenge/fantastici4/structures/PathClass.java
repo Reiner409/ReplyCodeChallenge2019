@@ -2,11 +2,8 @@ package it.ringcodingchallenge.fantastici4.structures;
 
 import it.ringcodingchallenge.fantastici4.structures.tiles.Customer;
 import it.ringcodingchallenge.fantastici4.structures.tiles.Terrain;
-import it.ringcodingchallenge.fantastici4.structures.tiles.TerrainType;
-import it.ringcodingchallenge.fantastici4.structures.tiles.Tile;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 

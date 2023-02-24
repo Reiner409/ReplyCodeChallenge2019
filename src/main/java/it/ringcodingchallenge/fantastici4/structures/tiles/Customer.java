@@ -3,8 +3,6 @@ package it.ringcodingchallenge.fantastici4.structures.tiles;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Comparator;
-
 @Getter
 @Setter
 public class Customer extends Tile implements Comparable<Customer> {

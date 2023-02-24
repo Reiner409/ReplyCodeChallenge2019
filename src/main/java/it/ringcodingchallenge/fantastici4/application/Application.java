@@ -1,10 +1,13 @@
 package it.ringcodingchallenge.fantastici4.application;
 
-import it.ringcodingchallenge.fantastici4.structures.tiles.*;
 import it.ringcodingchallenge.fantastici4.structures.Mappa;
+import it.ringcodingchallenge.fantastici4.structures.tiles.Customer;
+import it.ringcodingchallenge.fantastici4.structures.tiles.Reply;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Application {
 

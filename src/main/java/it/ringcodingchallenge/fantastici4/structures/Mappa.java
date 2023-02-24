@@ -2,7 +2,6 @@ package it.ringcodingchallenge.fantastici4.structures;
 
 import it.ringcodingchallenge.fantastici4.structures.tiles.Terrain;
 import it.ringcodingchallenge.fantastici4.structures.tiles.TerrainController;
-import it.ringcodingchallenge.fantastici4.structures.tiles.Tile;
 import lombok.Getter;
 import lombok.Setter;
 

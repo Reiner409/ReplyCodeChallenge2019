@@ -1,7 +1,5 @@
 package it.ringcodingchallenge.fantastici4.structures.tiles;
 
-import static java.lang.System.exit;
-
 public class TerrainController {
 
     public static Terrain generateTerrain(Character symbol, int x, int y) throws Exception {

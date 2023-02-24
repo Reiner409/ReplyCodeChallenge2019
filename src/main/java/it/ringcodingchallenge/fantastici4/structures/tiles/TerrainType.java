@@ -1,7 +1,6 @@
 package it.ringcodingchallenge.fantastici4.structures.tiles;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum TerrainType {
