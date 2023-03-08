@@ -1,110 +1,211 @@
 package it.ringcodingchallenge.fantastici4.application;
 
-import it.ringcodingchallenge.fantastici4.structures.Mappa;
-import it.ringcodingchallenge.fantastici4.structures.tiles.Customer;
-import it.ringcodingchallenge.fantastici4.structures.tiles.Reply;
 
-import java.io.File;
+import it.ringcodingchallenge.fantastici4.common.F4Reader;
+import it.ringcodingchallenge.fantastici4.common.F4Writer;
+import it.ringcodingchallenge.fantastici4.structures.cloud.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Application {
 
-    public enum Move {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
+    public static void getInput(List<Provider> providers, List<String> services, List<String> countries, List<Project> projects){
+
+        int numProviders, numServices, numCountries, numProjects, numRegions, i, j, k;
+
+        String line;
+        String values[];
+
+        F4Reader reader = new F4Reader("C:\\Users\\utente\\workspace\\code-challenge\\ReplyCodeChallenge2019\\src\\main\\resources\\input\\fourth_adventure.in");
+        reader.open();
+
+        // First line
+        values = reader.readLine(" ");
+        numProviders = Integer.parseInt(values[0]);
+        numServices = Integer.parseInt(values[1]);
+        numCountries = Integer.parseInt(values[2]);
+        numProjects = Integer.parseInt(values[3]);
+
+        // Services
+        values = reader.readLine(" ");
+        for(i=0; i<numServices; i++){
+            services.add(values[i]);
+        }
+
+        // Countries
+        values = reader.readLine(" ");
+        for(i=0; i<numCountries; i++){
+            countries.add(values[i]);
+        }
+
+        // Providers
+        for(i=0; i<numProviders; i++){
+            Provider provider = new Provider();
+
+            values = reader.readLine(" ");
+            provider.setName(values[0]);
+            numRegions = Integer.parseInt(values[1]);
+
+            List<Region> regions = new ArrayList<>();
+
+            for(j=0; j < numRegions; j++){
+                Region region = new Region();
+
+                region.setName(reader.readLine());
+
+                values = reader.readLine(" ");
+
+                region.setAvailablePackages(Integer.parseInt(values[0]));
+                region.setPackageUnitCost(Float.parseFloat(values[1]));
+
+                List<Integer> units = new ArrayList<>();
+                for(k=0; k<numServices; k++){
+                    units.add(Integer.parseInt(values[2+k]));
+                }
+
+                region.setUnits(units);
+
+                values = reader.readLine(" ");
+
+                List<Integer> latencies = new ArrayList<>();
+                for(k=0; k<numCountries; k++){
+                    latencies.add(Integer.parseInt(values[k]));
+                }
+
+                region.setLatencies(latencies);
+
+                regions.add(region);
+            }
+
+            provider.setRegions(regions);
+
+            providers.add(provider);
+        }
+
+        // Projects
+        for(i=0; i<numProjects; i++){
+            values = reader.readLine(" ");
+
+            Project project = new Project();
+            project.setPenalty(Integer.parseInt(values[0]));
+            project.setCountry(values[1]);
+
+            List<Integer> serviceUnits = new ArrayList<>();
+
+            for(j=0; j<numServices; j++){
+                serviceUnits.add(Integer.parseInt(values[2+j]));
+            }
+
+            project.setUnitsNeeded(serviceUnits);
+            project.setPurchases(new ArrayList<>());
+
+            projects.add(project);
+        }
+
+        reader.close();
     }
 
+    public static void printOutput(List<Project> projects){
+        StringBuilder line;
 
-    public Reply createReplyNearCustomer(Mappa map, Customer customer){
-        Reply newReply;
+        F4Writer writer = new F4Writer("C:\\Users\\utente\\workspace\\code-challenge\\ReplyCodeChallenge2019\\src\\main\\resources\\output\\output4.txt");
+        writer.open();
 
-       if(customer.getX() < map.getWidth() - 2){
-           newReply = new Reply(customer.getX() + 1, customer.getY());
-           newReply.addPath("L");
-       }
-       else{
-           newReply = new Reply(customer.getX() - 1, customer.getY());
-           newReply.addPath("R");
-       }
+        for(Project project : projects){
+            line = new StringBuilder();
 
-       return newReply;
+            for(Purchase purchase : project.getPurchases()){
+                line.append(purchase.getProvider()).append(" ").append(purchase.getRegion()).append(" ").append(purchase.getNumPackages()).append(" ");
+            }
+
+            writer.writeLine(line.toString());
+
+        }
+
+        writer.close();
     }
 
-    public List<Reply> getReplyOffices(Mappa map, Customer[] customers){
-        List<Reply> offices = new ArrayList<>();
+    public static int removeBoughtPackages(Project project, List<Provider> providers, int numProvider, int numRegion){
+        int i;
+        int numRemaining = 0;
+        int unitsBought = 0;
 
-        return offices;
+        Provider provider = providers.get(numProvider);
+        Region region = provider.getRegions().get(numRegion);
+        List<Integer> units = project.getUnitsNeeded();
+
+        // Total number of units needed
+        for(i=0; i<units.size(); i++){
+            numRemaining += units.get(i);
+        }
+
+        while(numRemaining > 0 && region.getAvailablePackages() > 0){
+
+            for(i=0; i<units.size(); i++){
+                units.set(i, units.get(i) - region.getUnits().get(i));
+                numRemaining -= region.getUnits().get(i);
+            }
+
+            unitsBought ++;
+            region.setAvailablePackages(region.getAvailablePackages() - 1);
+        }
+
+        project.setUnitsNeeded(units);
+
+        return unitsBought;
     }
+
+    public static void purchasePackages(Project project, List<Provider> providers, List<String> countries){
+        int country, i, j;
+        int bestProvider = -1;
+        int bestRegion = -1;
+
+        // Find country
+        for(i=0; i<countries.size(); i++){
+            if(countries.get(i).compareTo(project.getCountry()) == 0){
+                country = i;
+                break;
+            }
+        }
+
+        for(i=0; i<providers.size(); i++){
+            Provider provider = providers.get(i);
+
+            for(j=0; j<provider.getRegions().size(); j++){
+                Region region = provider.getRegions().get(j);
+
+                bestProvider = i;
+                bestRegion = j;
+
+            }
+
+        }
+
+        int bought = removeBoughtPackages(project, providers, bestProvider, bestRegion);
+
+        if(bought > 0){
+            project.getPurchases().add(new Purchase(bestProvider, bestRegion, bought));
+        }
+
+    }
+
 
     public static void main(String[] args) {
 
-        File input = new File("D:/Reply_Code_Challenge/input/1_victoria_lake.txt");
-        try(Scanner sc = new Scanner(input)) {
+        List<Provider> providers = new ArrayList<>();
+        List<String> services = new ArrayList<>();
+        List<String> countries = new ArrayList<>();
+        List<Project> projects = new ArrayList<>();
 
-            String[] line = sc.nextLine().split(" ");
-            int width = Integer.parseInt(line[0]);
-            int height = Integer.parseInt(line[1]);
-            int c = Integer.parseInt(line[2]);
-            int o = Integer.parseInt(line[3]);
+        getInput(providers, services, countries, projects);
 
-            Mappa map = new Mappa(width, height, c, o);
-            Customer[] customers = new Customer[c];
-            Reply[] replies = new Reply[o];
-
-            /* Init customer headquarters */
-            for (int i = 0; i < c; i++) {
-                String[] coords = sc.nextLine().split(" ");
-                int x = Integer.parseInt(coords[0]);
-                int y = Integer.parseInt(coords[1]);
-                double reward = Integer.parseInt(coords[2]);
-                customers[i] = new Customer(x, y, reward);
-            }
-
-            /* Init the map */
-            for (int i = 0; i < height; i++) {
-                char[] lineChar = sc.nextLine().toCharArray();
-                for (int j = 0; j < width; j++) {
-                    map.addTerrain(lineChar[j], j, i);
-                }
-            }
-
-            System.out.println(map);
-
-            //Arrays.sort(customers);
-
-            Reply newReply;
-            for(int i=0; (i < customers.length && i < replies.length); i++){
-                if(customers[i].getX() < map.getWidth() - 2){
-                    newReply = new Reply(customers[i].getX() + 1, customers[i].getY());
-                    newReply.addPath("L");
-                }
-                else{
-                    newReply = new Reply(customers[i].getX() - 1, customers[i].getY());
-                    newReply.addPath("R");
-                }
-
-                replies[i] = newReply;
-            }
-
-            /* PRINT OUTPUT */
-            printOutput(replies);
+        for(int i=0; i<projects.size(); i++){
+            purchasePackages(projects.get(i), providers, countries);
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+
+        printOutput(projects);
     }
 
-    public static void printOutput(Reply[] replies) {
-        for (Reply r: replies) {
-            for (String path : r.getPathsToOffices()) {
-                System.out.println(String.format("%d %d %s", r.getX(), r.getY(), path));
-            }
-        }
-    }
 
 }
