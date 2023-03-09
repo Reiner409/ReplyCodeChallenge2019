@@ -5,12 +5,15 @@ import it.ringmaster.fantastici4.rc23.common.F4Writer;
 
 public class Application {
 
-    private static final String inputFile = "C:\\Users\\utente\\workspace\\code-challenge\\ReplyCodeChallenge2019\\src\\main\\resources\\input\\fourth_adventure.in";
-    private static final String outputFile = "C:\\Users\\utente\\workspace\\code-challenge\\ReplyCodeChallenge2019\\src\\main\\resources\\output\\output4.txt";
+    private static final String folder = "D:\\Repos\\Challenge\\ReplyCodeChallenge2019\\code-challenge-2023\\src\\main\\resources\\";
+    private static final String inputFile1 = "";
+    private static final String inputFile2 = "";
+    private static final String inputFile3 = "";
+    private static final String inputFile4 = "";
 
-    public static void getInput(){
+    public static void getInput(String fileName){
 
-        F4Reader reader = new F4Reader("C:\\Users\\utente\\workspace\\code-challenge\\ReplyCodeChallenge2019\\src\\main\\resources\\input\\fourth_adventure.in");
+        F4Reader reader = new F4Reader(folder+fileName);
         reader.open();
 
         // Spacchettare i dati in ingresso nelle varie classi
@@ -18,8 +21,8 @@ public class Application {
         reader.close();
     }
 
-    public static void printOutput(){
-        F4Writer writer = new F4Writer(outputFile);
+    public static void printOutput(String fileName){
+        F4Writer writer = new F4Writer(folder+fileName+"_output");
         writer.open();
 
         // Mettere i dati su una riga da far printare nel file
@@ -28,11 +31,11 @@ public class Application {
     }
 
     public static void main(String[] args) {
-
-        getInput();
+        String fileName = inputFile1;
+        getInput(fileName);
 
         // Logica quì!
 
-        printOutput();
+        printOutput(fileName);
     }
 }
