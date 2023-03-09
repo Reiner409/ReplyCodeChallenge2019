@@ -1,8 +1,8 @@
 package it.ringmaster.fantastici4.rc18.functions;
 
-import it.ringmaster.fantastici4.rc18.cloud.Project;
-import it.ringmaster.fantastici4.rc18.cloud.Purchase;
-import it.ringmaster.fantastici4.rc18.cloud.Region;
+import it.ringmaster.fantastici4.rc18.structures.cloud.Project;
+import it.ringmaster.fantastici4.rc18.structures.cloud.Purchase;
+import it.ringmaster.fantastici4.rc18.structures.cloud.Region;
 
 import java.util.ArrayList;
 import java.util.List;

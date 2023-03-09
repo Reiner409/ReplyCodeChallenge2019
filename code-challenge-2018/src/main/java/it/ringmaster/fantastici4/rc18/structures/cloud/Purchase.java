@@ -1,4 +1,4 @@
-package it.ringmaster.fantastici4.rc18.cloud;
+package it.ringmaster.fantastici4.rc18.structures.cloud;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
