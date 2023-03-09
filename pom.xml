@@ -26,6 +26,7 @@
     <modules>
         <module>code-challenge-2018</module>
         <module>code-challenge-2019</module>
+        <module>code-challenge-2023</module>
     </modules>
 
 </project>
